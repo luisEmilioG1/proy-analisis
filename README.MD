@@ -1,3 +1,5 @@
+# Diseño
+![alt text](imgs/image-3.png)
 # Instalación
 ```bash
 git clone https://github.com/luisEmilioG1/proy-analisis
