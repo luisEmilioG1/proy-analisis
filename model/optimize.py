@@ -1,4 +1,5 @@
 from .estadoCanalF import EstadoCanalF
+from .estadoEstadoF import EstadoEstadoF
 from .combos import Combos
 from .util import obtains_index_null, obtains_index_not_null
 
@@ -9,6 +10,7 @@ class Optimize:
         """" every one array estadosCanalF must be dimensions nX2 """
         self.estados_canal_f = [EstadoCanalF(np.array(array)) for array in estadosCanalF]
         self.combos = Combos(len(self.estados_canal_f))
+        self.estado_estado_f = EstadoEstadoF(self._generate_EstadoEstadoF())
 
     def get_probability_distribution(self, c_state:list, f_state:list):
         index_channels_in_future = obtains_index_not_null(f_state)
@@ -50,3 +52,14 @@ class Optimize:
 
         return distribution_result
 
+    def _generate_EstadoEstadoF(self):
+        estado_estado_f = []
+        for i in range(len(self.estados_canal_f[0].array)):
+            acc_row = None
+            for estado_canal_f in self.estados_canal_f:
+                if acc_row is None:
+                    acc_row = estado_canal_f.array[i]
+                else:
+                    acc_row = np.outer(estado_canal_f.array[i], acc_row).flatten()
+            estado_estado_f.append(acc_row)
+        return estado_estado_f
