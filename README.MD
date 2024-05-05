@@ -1,13 +1,27 @@
 # Diseño
 ![alt text](imgs/image-3.png)
+
 # Instalación
 ```bash
 git clone https://github.com/luisEmilioG1/proy-analisis
-
 cd proy-analisis
+```
+
+# Versiones
+PS C:\Users\luise> python --version
+Python 3.11.5
+
+PS C:\Users\luise> pip --version
+pip 23.2.1 from C:\Python311\Lib\site-packages\pip (python 3.11)
+
+### Windows
+```bash
+python -m venv myenv
+myenv\Scripts\activate
 
 pip install -r requirements.txt
 ```
+
 # Entrega 1
 Se permite calcular la distribución de probabilidades de cualquier subsistema de estados no vacíos `(current_state | next_state = xxxx)` partiendo de tablas `EstadoCanalF`
 ![alt text](imgs/image.png)
@@ -21,7 +35,7 @@ Se permite calcular la distribución de probabilidades de cualquier subsistema d
 
 ## Ejecución
 ```bash
-python3 -m unittest entrega1.py
+python -m unittest entrega1.py
 ```
 
 # Entrega 2
@@ -36,5 +50,5 @@ python3 -m unittest entrega1.py
 
 ## Ejecución
 ```bash
-python3 entrega2.py
+python entrega2.py
 ```
