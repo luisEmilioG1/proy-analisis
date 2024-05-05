@@ -1,3 +1,5 @@
+from math import log2
+
 class Combos:
 
     def __init__(self, num_channels:int):

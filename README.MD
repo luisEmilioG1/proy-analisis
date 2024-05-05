@@ -23,3 +23,18 @@ Se permite calcular la distribución de probabilidades de cualquier subsistema d
 ```bash
 python3 -m unittest entrega1.py
 ```
+
+# Entrega 2
+## Diseño
+![alt text](imgs/desing2.png)
+
+## Características
+* Cálculo de distribuciones de probabilidades con vacío tanto en presente como en futuro
+* Crear un grafo que representa un sistema dado por (f_state|c_state=XXXX)
+* Eliminación y restablecimiento de cualquier conección del grafo  
+* Verificar distancia entre distribuciones de probabilidad
+
+## Ejecución
+```bash
+python3 entrega2.py
+```

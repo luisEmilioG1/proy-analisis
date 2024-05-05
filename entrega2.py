@@ -37,3 +37,5 @@ graph.set_states(
     [1, None, 0], 
     [True, True, True]
 )
+
+graph.optimize()

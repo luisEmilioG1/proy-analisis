@@ -19,9 +19,12 @@ class Optimize:
         index_channels_not_in_present = obtains_index_null(c_state)
 
         # empty future
-        # TODO: empty en present
-        if len(index_channels_in_future) == 0 or len(index_channels_in_present) == 0:
+        if len(index_channels_in_future) == 0 :
             return [1]
+        
+        if len(index_channels_in_present) == 0:
+            x = 1/(len(index_channels_in_future)*2)
+            return [x]*(2**len(index_channels_in_future))
 
         # case no marginalize present
         # TODO: use table EstadosEstadoF
