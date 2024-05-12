@@ -3,6 +3,7 @@ from .connection import Connection
 from .combos import Combos
 from .util import (
     obtains_index_not_null, 
+    set_channels_to_string,
     obtains_index_null,
     apply_formula,
     distance)
@@ -10,8 +11,12 @@ from .util import (
 class Graph:
 
     def __init__(self, *estadosCanalF):
-        self.nodes = {}
-        self.connections = []
+        self.nodes:dict[int, Node] = {}
+        self.connections:list[Connection] = []
+
+        self.nodes_bipartition_representation = set([])
+        self.connections_bipartition_representation = {}
+
         for i in range(len(estadosCanalF)):
             self.add_node(i, estadosCanalF[i])
 
@@ -45,9 +50,20 @@ class Graph:
     def undo(self, connection):
         connection.undo()
 
-    def is_bipartition(self) -> bool:
-        # TODO
-        pass
+    def is_bipartition(self, to) -> bool:
+        adjacent = []
+        queue = [to]
+        while queue:
+            u = queue.pop(0)
+            if u not in self.connections_bipartition_representation:
+                return True
+            else:
+                adjacent.append(u)
+                for v in self.connections_bipartition_representation[u]:
+                    if v not in adjacent and v not in queue:
+                        queue.append(v)
+
+        return len(adjacent) != len(self.nodes_bipartition_representation)
 
     def get_probability_distribution(self):
         index_channels_in_future = obtains_index_not_null(self.next_state)
@@ -85,20 +101,88 @@ class Graph:
 
     def get_distance(self):
         new_probability_distribution = self.get_probability_distribution()
-        print("old: ", self.initial_probability_distribution)
-        print("new: ", new_probability_distribution)
+        #print("old: ", self.initial_probability_distribution)
+        #print("new: ", new_probability_distribution)
         return distance(self.initial_probability_distribution, new_probability_distribution)
 
+    def update_nodes_bipartition_representation(self):
+        self.nodes_bipartition_representation = set([])
+        for connection in self.connections:
+            if not connection.is_cut:
+                source, to = connection.get_source_to_name()
+                self.nodes_bipartition_representation.add(source)
+                self.nodes_bipartition_representation.add(to)
+
+    def update_connections_bipartition_representation(self):
+        self.connections_bipartition_representation = {}
+        for connection in self.connections:
+            if not connection.is_cut:
+                source, to = connection.get_source_to_name()
+
+                if to not in self.connections_bipartition_representation:
+                    self.connections_bipartition_representation[to] = set([source])
+                else:
+                    self.connections_bipartition_representation[to].add(source)
+
+                if source not in self.connections_bipartition_representation:
+                    self.connections_bipartition_representation[source] = set([to])
+                else:
+                    self.connections_bipartition_representation[source].add(to)
+
     def optimize(self):
-        for connection in self.connections:        
-            print(connection.__str__())
+        self.update_nodes_bipartition_representation()
+        bipartition = False
+        i = 0
+        while not bipartition and i < len(self.connections):        
+            connection = self.connections[i]
+            # print(connection.__str__())
             con = connection.__str__()
             connection.cut(self.combos)
             distance = self.get_distance()
-            print("distance: ",distance)
+            # print("distance: ",distance)
 
             if distance > 0:
                 connection.undo()
+            else:
+                print(connection.__str__())
+                _, to = connection.get_source_to_name()
+                self.update_connections_bipartition_representation()
+                bipartition = self.is_bipartition(to)
+            i += 1
+            # print("-"*30)
 
-            print("-"*30)
-        print()
+        if bipartition:
+            self.sol_to_string()
+        else:
+            print("No bipartition found")
+
+        
+    def sol_to_string(self):
+        current_partition1 = set([])
+        future_partition1 = set([])
+        current_partition2 = set([])
+        future_partition2 = set([])
+
+        for sol_conn in list(self.connections_bipartition_representation.keys()):
+            if sol_conn.startswith("f"):
+                continue
+            if len(current_partition1) == 0:
+                current_partition1.add(sol_conn)
+                future_partition1= future_partition1.union(self.connections_bipartition_representation[sol_conn])
+            elif future_partition1 & self.connections_bipartition_representation[sol_conn]:
+                current_partition1.add(sol_conn)
+                future_partition1 = future_partition1.union(self.connections_bipartition_representation[sol_conn])
+            else:
+                current_partition2.add(sol_conn)
+                future_partition2 = future_partition2.union(self.connections_bipartition_representation[sol_conn])
+
+        print("P1: ",
+               set_channels_to_string(future_partition1),
+               "|",
+               set_channels_to_string(current_partition1)
+               )
+        print("P2: ",
+               set_channels_to_string(future_partition2),
+               "|",
+               set_channels_to_string(current_partition2)
+               )

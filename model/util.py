@@ -22,3 +22,9 @@ def apply_formula(probability_distributions: list):
 
 def distance(distribution1: list, distribution2: list):
     return wasserstein_distance(distribution1, distribution2)
+
+def get_character_by_index(index: int):
+    return chr(index + 97).upper()
+
+def set_channels_to_string(channels: set):
+    return "".join([get_character_by_index(int(i[1:])) for i in channels])
