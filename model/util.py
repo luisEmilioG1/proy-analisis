@@ -27,4 +27,6 @@ def get_character_by_index(index: int):
     return chr(index + 97).upper()
 
 def set_channels_to_string(channels: set):
-    return "".join([get_character_by_index(int(i[1:])) for i in channels])
+    channels_int = [get_character_by_index(int(i[1:])) for i in channels]
+    channels_int.sort()
+    return "".join(channels_int)

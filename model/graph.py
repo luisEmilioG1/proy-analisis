@@ -116,18 +116,17 @@ class Graph:
     def update_connections_bipartition_representation(self):
         self.connections_bipartition_representation = {}
         for connection in self.connections:
+            source, to = connection.get_source_to_name()
+
+            if to not in self.connections_bipartition_representation:
+                    self.connections_bipartition_representation[to] = set([])
+            
+            if source not in self.connections_bipartition_representation:
+                    self.connections_bipartition_representation[source] = set([])
+
             if not connection.is_cut:
-                source, to = connection.get_source_to_name()
-
-                if to not in self.connections_bipartition_representation:
-                    self.connections_bipartition_representation[to] = set([source])
-                else:
-                    self.connections_bipartition_representation[to].add(source)
-
-                if source not in self.connections_bipartition_representation:
-                    self.connections_bipartition_representation[source] = set([to])
-                else:
-                    self.connections_bipartition_representation[source].add(to)
+                self.connections_bipartition_representation[to].add(source)
+                self.connections_bipartition_representation[source].add(to)
 
     def optimize(self):
         self.update_nodes_bipartition_representation()
@@ -155,14 +154,12 @@ class Graph:
             self.sol_to_string()
         else:
             print("No bipartition found")
-
         
     def sol_to_string(self):
         current_partition1 = set([])
         future_partition1 = set([])
         current_partition2 = set([])
         future_partition2 = set([])
-
         for sol_conn in list(self.connections_bipartition_representation.keys()):
             if sol_conn.startswith("f"):
                 continue
@@ -175,6 +172,15 @@ class Graph:
             else:
                 current_partition2.add(sol_conn)
                 future_partition2 = future_partition2.union(self.connections_bipartition_representation[sol_conn])
+
+        for sol_conn in list(self.connections_bipartition_representation.keys()):
+            if sol_conn.startswith("c"):
+                continue   
+            if sol_conn not in future_partition1:
+                future_partition2 = future_partition2.union([sol_conn])
+            if sol_conn not in future_partition2:
+                future_partition1 = future_partition1.union([sol_conn])
+            
 
         print("P1: ",
                set_channels_to_string(future_partition1),
