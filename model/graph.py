@@ -138,6 +138,7 @@ class Graph:
             con = connection.__str__()
             connection.cut(self.combos)
             distance = self.get_distance()
+            connection.set_loss(distance)
             # print("distance: ",distance)
 
             if distance > 0:

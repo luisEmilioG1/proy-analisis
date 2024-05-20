@@ -52,3 +52,4 @@ graph.optimize()
 
 execution_time = time.time() - start_time
 print("Execution time: ", execution_time, " seconds")
+

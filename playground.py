@@ -1,90 +1,22 @@
 from model import Graph
-from model import Optimize
+from data import estados_canalF1, estados_canalF2, estados_canalF3, estados_canalF4, estados_canalF5
 
-graph = Graph(
-                [  
-                    [0,	1],
-                    [0,	1],
-                    [1,	0],
-                    [1,	0],
-                    [1,	0],
-                    [1,	0],
-                    [1,	0],
-                    [1,	0],
-                ], 
-                [   
-                    [0,	1],
-                    [0,	1],
-                    [0,	1],
-                    [0,	1],
-                    [0,	1],
-                    [1,	0],
-                    [0,	1],
-                    [1,	0],
-                ],
-                [   
-                    [0,	1],
-                    [1,	0],
-                    [1,	0],
-                    [0,	1],
-                    [0,	1],
-                    [1,	0],
-                    [1,	0],
-                    [0,	1],
-                ]
-            )
+graph = Graph(estados_canalF1, estados_canalF2, estados_canalF3, estados_canalF4, estados_canalF5)
 
-optimize = Optimize(
-     [[0.5, 0.5],
-       [0.5, 0.5],
-       [1. , 0. ],
-       [1. , 0. ],
-       [0.5, 0.5],
-       [0.5, 0.5],
-       [1. , 0. ],
-       [1. , 0. ]], 
-                [[0. , 1. ],
-       [0. , 1. ],
-       [0. , 1. ],
-       [0. , 1. ],
-       [0.5, 0.5],
-       [0.5, 0.5],
-       [0.5, 0.5],
-       [0.5, 0.5]],
-                [   
-                    [0,	1],
-                    [1,	0],
-                    [1,	0],
-                    [0,	1],
-                    [0,	1],
-                    [1,	0],
-                    [1,	0],
-                    [0,	1],
-                ]
-)
-
+# no partition
+print("ABC|ABCD  = 1000")
 graph.set_states(
-    [0, 1, 0], 
-    [True, True, True]
+    [1, 0, 0, 0, None], 
+    [True, True, True, None, None]
 )
 graph.optimize()
 
-print(graph.initial_probability_distribution)
-# print([node.EstadosCanalF.array for node in list(graph.nodes.values())])
-print(optimize.get_probability_distribution(
-    [0, 1, 0], 
-    [True, True, True]
-))
-# [0 0 1 0 0 0 0 0]
+for con in graph.connections:
+    print(con)
 
-# p1 = optimize.get_probability_distribution(
-#     [0, None, 0], 
-#     [True, True, None]
-# )
-
-# p2 = optimize.get_probability_distribution(
-#     [None, 1, None], 
-#     [None, None, True]
-# )
-
-# print(p1, p2)
+index=[0, 4,7]
+for i in index:
+    graph.connections[i].cut(graph.combos)
+print(graph.get_distance())
+for i in index:
+    graph.connections[i].undo()

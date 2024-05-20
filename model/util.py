@@ -1,5 +1,6 @@
+import math
 import numpy as np
-from scipy.stats import wasserstein_distance
+from pyphi.distance import _hamming_matrix, emd
 
 def obtains_index_not_null(elements_list: list):
     return [i for i, x in enumerate(elements_list) if x is not None]
@@ -21,7 +22,12 @@ def apply_formula(probability_distributions: list):
     return distribution_result
 
 def distance(distribution1: list, distribution2: list):
-    return wasserstein_distance(distribution1, distribution2)
+    dist1 = np.array([float(i) for i in distribution1])
+    dist2 = np.array([float(i) for i in distribution2])
+    # TODO: check N value
+    N = int(math.log2(len(dist1)))
+    hamming_matrix = _hamming_matrix(N)
+    return emd(dist1, dist2, hamming_matrix)
 
 def get_character_by_index(index: int):
     return chr(index + 97).upper()
