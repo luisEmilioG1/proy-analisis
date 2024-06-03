@@ -43,12 +43,21 @@ graph = Graph(estados_canalF1, estados_canalF2, estados_canalF3, estados_canalF4
 # graph.optimize()
 
 # # - ABCDE|AB    =  10
-print("ABCDE|AB    =  10")
+# print("ABCDE|AB    =  10")
+# graph.set_states(
+#     [1, 0, None, None, None], 
+#     [True, True, True, True, True]
+# )
+# graph.optimize()
+
+# # - ABC|ABCD   = 10001
+print("ABC|ABCD   = 1000")
 graph.set_states(
-    [1, 0, None, None, None], 
-    [True, True, True, True, True]
+    [1, 0, 0, 0, None], 
+    [True, True, True, None, None]
 )
 graph.optimize()
+graph.strategy()
 
 execution_time = time.time() - start_time
 print("Execution time: ", execution_time, " seconds")

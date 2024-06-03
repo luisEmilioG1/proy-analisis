@@ -1,22 +1,11 @@
-from model import Graph
-from data import estados_canalF1, estados_canalF2, estados_canalF3, estados_canalF4, estados_canalF5
+import math
+import numpy as np
+from pyphi.distance import _hamming_matrix, emd
 
-graph = Graph(estados_canalF1, estados_canalF2, estados_canalF3, estados_canalF4, estados_canalF5)
+dist1 = np.array([.0, .5, .25, .25])
+dist2 = np.array([.25, .25, .25, .25])
 
-# no partition
-print("ABC|ABCD  = 1000")
-graph.set_states(
-    [1, 0, 0, 0, None], 
-    [True, True, True, None, None]
-)
-graph.optimize()
-
-for con in graph.connections:
-    print(con)
-
-index=[0, 4,7]
-for i in index:
-    graph.connections[i].cut(graph.combos)
-print(graph.get_distance())
-for i in index:
-    graph.connections[i].undo()
+N = int(2)
+hamming_matrix = _hamming_matrix(N)
+print(hamming_matrix)
+print(emd(dist1, dist2, hamming_matrix))
