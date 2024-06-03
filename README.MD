@@ -54,3 +54,14 @@ python -m unittest entrega1.py
 ```bash
 python entrega2.py
 ```
+
+# Entrega 3
+## Características
+* Determinar si hay o no bi-partición
+* Hallar la partición que genera menor pérdida
+
+## Ejecución
+```bash
+python entrega3.py   # 5 canales
+python entrega3.1.py # 6 canales
+```
