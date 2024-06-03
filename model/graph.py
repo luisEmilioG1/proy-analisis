@@ -144,7 +144,6 @@ class Graph:
             if distance > 0:
                 connection.undo()
             else:
-                print(connection.__str__())
                 _, to = connection.get_source_to_name()
                 self.update_connections_bipartition_representation()
                 bipartition = self.is_bipartition(to)
@@ -153,8 +152,10 @@ class Graph:
 
         if bipartition:
             self.sol_to_string()
+            print("loss value: ", 0.0)
+            print(self.get_probability_distribution())
         else:
-            print("No bipartition found")
+            self.strategy()
         
     def sol_to_string(self):
         current_partition1 = set([])
@@ -183,13 +184,54 @@ class Graph:
                 future_partition1 = future_partition1.union([sol_conn])
             
 
-        print("P1: ",
+        print("P1= {",
                set_channels_to_string(future_partition1),
                "|",
-               set_channels_to_string(current_partition1)
+               set_channels_to_string(current_partition1),
+               "}"
                )
-        print("P2: ",
+        print("P2= {",
                set_channels_to_string(future_partition2),
                "|",
                set_channels_to_string(current_partition2)
+                ,"}"
                )
+
+    def strategy(self):
+        global_level = float('inf')
+        sol = None
+        dist = None
+        def wrapper(i=0):
+            nonlocal global_level
+            nonlocal sol
+            nonlocal dist
+
+            connection = self.connections[i]
+            if connection.is_cut:
+                return
+            connection.cut(self.combos)
+            distance = self.get_distance()
+
+            _, to = connection.get_source_to_name()
+            self.update_connections_bipartition_representation()
+            
+            if self.is_bipartition(to) and distance < global_level:                 
+                global_level = distance
+                sol = self.connections_bipartition_representation.copy()
+                dist = self.get_probability_distribution().copy()
+            elif distance < global_level:
+                for i in range(len(self.connections)):
+                    conn = self.connections[i]
+                    if not conn.is_cut:
+                        wrapper(i)
+
+            connection.undo()
+        
+        for i in range(len(self.connections)):
+            wrapper(i)
+        
+        self.connections_bipartition_representation = sol
+        self.sol_to_string()
+        print("loss value: ", global_level)
+        print(dist)
+        
