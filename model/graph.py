@@ -198,9 +198,7 @@ class Graph:
                )
 
     def strategy(self):
-        global_level = float('inf')
-        sol = None
-        dist = None
+        global_level, sol, dist = self.find_initial_sol()
         def wrapper(i=0):
             nonlocal global_level
             nonlocal sol
@@ -235,3 +233,30 @@ class Graph:
         print("loss value: ", global_level)
         print(dist)
         
+    def find_initial_sol(self):
+        global_sol = None
+        global_level=float('inf')
+        global_dist = None
+        old_index_node = 0
+        self.update_nodes_bipartition_representation()
+        temp_cut = []
+        for con in self.connections:
+            index_node = con.to.id_channel
+            _, to = con.get_source_to_name()
+
+            # change node or last node
+            if index_node != old_index_node or index_node == len(self.nodes)-1:
+                self.update_connections_bipartition_representation()
+                if self.is_bipartition(to) and self.get_distance() < global_level:
+                    global_level = self.get_distance()
+                    global_sol = self.connections_bipartition_representation.copy()
+                    global_dist = self.get_probability_distribution().copy()
+                old_index_node = index_node
+                for c in temp_cut:
+                    c.undo()
+                temp_cut = []
+            self.update_connections_bipartition_representation()
+            if (not con.is_cut) and (not self.is_bipartition(to)):
+                    temp_cut.append(con)
+                    con.cut(self.combos)
+        return global_level, global_sol, global_dist
