@@ -36,3 +36,6 @@ def set_channels_to_string(channels: set):
     channels_int = [get_character_by_index(int(i[1:])) for i in channels]
     channels_int.sort()
     return "".join(channels_int)
+
+def set_states_to_string(states: list):
+    return "".join([get_character_by_index(i) for i in states])
