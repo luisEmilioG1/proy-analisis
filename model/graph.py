@@ -94,10 +94,20 @@ class Graph:
             new_combos = Combos(len(index_channels_in_present))
             index_combo_current_state = new_combos.get_index_combo(c_state_str) 
 
-            marginalize_combos = self.combos.marginalize_combos(index_channels_not_in_present)
-            probability_distributions = [self.nodes[i].marginalize_rows(list(marginalize_combos.values())).get_probability_distribution(index_combo_current_state) for i in index_channels_in_future]
+            dist_to_combine = []
+            for i in index_channels_in_future:
+                estados_canal_f = self.nodes[i]
+                num_channels_available = len(self.current_state)
+                for c in range(len(index_channels_not_in_present)-1, -1, -1):
+                    channel = index_channels_not_in_present[c]
+                    new_combos = Combos(num_channels_available)
+                    marginalize_combos = new_combos.marginalize_combos([channel])
+                    
+                    estados_canal_f = estados_canal_f.marginalize_rows(list(marginalize_combos.values()))
+                    num_channels_available -= 1
+                dist_to_combine.append(estados_canal_f.get_probability_distribution(index_combo_current_state))
 
-            return apply_formula(probability_distributions)
+            return apply_formula(dist_to_combine)
 
     def get_distance(self):
         new_probability_distribution = self.get_probability_distribution()
