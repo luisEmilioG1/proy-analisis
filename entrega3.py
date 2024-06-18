@@ -43,10 +43,10 @@ graph = Graph(A, B, C, D, E)
 # )
 
 #?7 ABCt+1|ABCt
-# graph.set_states(
-#     next_state=[True, True, True, None, None],
-#     current_state=[1, 0, 0, None, None]
-# )
+graph.set_states(
+    next_state=[True, True, True, None, None],
+    current_state=[1, 0, 0, None, None]
+)
 
 #?8 ABCEt+1|ABEt
 # graph.set_states(
@@ -67,13 +67,15 @@ graph = Graph(A, B, C, D, E)
 # )
 
 #?11 ABCt+1|ACt
-graph.set_states(
-    next_state=[True, True, True, None, None],
-    current_state=[1, None, 0, None, None]
-)
+# graph.set_states(
+#     next_state=[True, True, True, None, None],
+#     current_state=[1, None, 0, None, None]
+# )
 
 
 
 graph.optimize()
+for i in graph.connections:
+    print(i)
 execution_time = time.time() - start_time
 print("Execution time: ", execution_time, " seconds")
