@@ -57,7 +57,6 @@ graph.set_states(
     [True, True, True, None, None]
 )
 graph.optimize()
-graph.strategy()
 
 execution_time = time.time() - start_time
 print("Execution time: ", execution_time, " seconds")

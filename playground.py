@@ -1,41 +1,12 @@
 import numpy as np
 
 from model import Optimize
+from datosentregaF.red_6n import A, B, C, D, E, F
 from model.util import distance, set_states_to_string, obtains_index_not_null
-optimize = Optimize(
-    [
-    [1, 0],
-    [1, 0],
-    [0, 1],
-    [0, 1],
-    [0, 1],
-    [0, 1],
-    [0, 1],
-    [0, 1]
-    ],
-    [
-    [1, 0],
-    [1, 0],
-    [1, 0],
-    [1, 0],
-    [1, 0],
-    [0, 1],
-    [1, 0],
-    [0, 1],
-    ],
-    [
-    [1, 0],
-    [0, 1],
-    [0, 1],
-    [1, 0],
-    [1, 0],
-    [0, 1],
-    [0, 1],
-    [1, 0],
-    ])
+optimize = Optimize(A, B, C, D, E, F)
 
-f_state=[True, True, True]
-c_state=[1, None, 0]
+f_state=[None, True, True, True, True, True]
+c_state=[1, 0, None, None, 0, 0]
 
 num_characters_f_state = sum(1 for i in f_state if i is not None)
 num_characters_c_state = sum(1 for i in c_state if i is not None)

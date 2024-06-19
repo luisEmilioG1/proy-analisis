@@ -75,7 +75,6 @@ graph.set_states(
 
 
 graph.optimize()
-for i in graph.connections:
-    print(i)
+
 execution_time = time.time() - start_time
 print("Execution time: ", execution_time, " seconds")
